@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@font-face {
+  font-family: "YiShanBeiZhuan";
+  src: url("/assets/font/YiShanBeiZhuanTi.ttf");
+}
+@font-face {
+  font-family: "LaiJiangHuLang";
+  src: url("/assets/font/PingFangLaiJiangHuLangTi-2.ttf");
+}
+
+.beizhuan {
+  font-family: "YiShanBeiZhuan";
+}
+.laijianghulang {
+  font-family: "LaiJiangHuLang";
+}
