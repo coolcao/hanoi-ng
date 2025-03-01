@@ -1,6 +1,6 @@
-import { Component, effect, inject, OnInit, Signal, signal } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { Disk } from '../hanoi.types';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { HanoiStore } from '../hanoi.store';
 import { timer } from 'rxjs';
 
