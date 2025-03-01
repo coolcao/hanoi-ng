@@ -37,6 +37,9 @@ export class HanoiStore {
       stack.push({ value: i + 1 });
     }
     this._stack1.set(stack);
+    this._stack2.set([]);
+    this._stack3.set([]);
+    this._steps.set(0);
   }
 
   // 增加步数

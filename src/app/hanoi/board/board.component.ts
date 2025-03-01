@@ -71,5 +71,14 @@ export class HanoiBoardComponent implements OnInit {
     this.store.updateStack(this.stack3(), 'stack3');
   }
 
+  changeSize(size: number) {
+    this.store.setSize(size);
+    this.store.initBoard();
+  }
+
+  restart() {
+    this.store.initBoard();
+  }
+
 
 }
