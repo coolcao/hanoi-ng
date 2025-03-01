@@ -1,7 +1,8 @@
-import { Component, inject, OnInit, Signal, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, Signal, signal } from '@angular/core';
 import { Disk } from '../hanoi.types';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { HanoiStore } from '../hanoi.store';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'hanoi-board',
@@ -14,8 +15,16 @@ export class HanoiBoardComponent implements OnInit {
 
   readonly store = inject(HanoiStore);
 
-  constructor(
-  ) { }
+  constructor() {
+    effect(() => {
+      if (this.isCompleted()) {
+        this.showSuccess = true;
+        timer(3000).subscribe(() => {
+          this.showSuccess = false;
+        });
+      }
+    });
+  }
 
   readonly stack1 = this.store.stack1;
   readonly stack2 = this.store.stack2;
@@ -25,6 +34,7 @@ export class HanoiBoardComponent implements OnInit {
   readonly size = this.store.size;
 
   showHelp = false;
+  showSuccess = false;
 
   ngOnInit(): void {
     this.store.initBoard();

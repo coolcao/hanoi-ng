@@ -5,11 +5,13 @@ import { CdkDrag, CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 
 import { HanoiRoutingModule } from './hanoi-routing.module';
 import { HanoiBoardComponent } from './board/board.component';
+import { ScatterFlowersComponent } from './scatter-flowers/scatter-flowers.component';
 
 
 @NgModule({
   declarations: [
     HanoiBoardComponent,
+    ScatterFlowersComponent,
   ],
   imports: [
     CommonModule,
