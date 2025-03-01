@@ -35,6 +35,19 @@
           <option [ngValue]="9">9片</option>
         </select>
       </div>
+      <div
+        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200"
+      >
+        是否显示碟片标识：
+        <select
+          [ngModel]="showValue"
+          (ngModelChange)="showValue = $event"
+          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        >
+          <option [ngValue]="true">显示</option>
+          <option [ngValue]="false">不显示</option>
+        </select>
+      </div>
       <button
         class="mr-2 cursor-pointer rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none lg:px-5 lg:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         (click)="restart()"
@@ -68,6 +81,7 @@
                 [cdkDragData]="disk"
               >
                 <span
+                  *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center hover:cursor-grab"
                 >
                   {{ disk.value }}
@@ -78,7 +92,10 @@
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
                 class="disk select-none"
               >
-                <span class="flex h-full w-full items-center justify-center">
+                <span
+                  *ngIf="showValue"
+                  class="flex h-full w-full items-center justify-center"
+                >
                   {{ disk.value }}
                 </span>
               </div>
@@ -110,6 +127,7 @@
                 [cdkDragData]="disk"
               >
                 <span
+                  *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center hover:cursor-grab"
                 >
                   {{ disk.value }}
@@ -120,7 +138,10 @@
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
                 class="disk select-none"
               >
-                <span class="flex h-full w-full items-center justify-center">
+                <span
+                  *ngIf="showValue"
+                  class="flex h-full w-full items-center justify-center"
+                >
                   {{ disk.value }}
                 </span>
               </div>
@@ -152,6 +173,7 @@
                 [cdkDragData]="disk"
               >
                 <span
+                  *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center hover:cursor-grab"
                 >
                   {{ disk.value }}
@@ -162,7 +184,10 @@
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
                 class="disk select-none"
               >
-                <span class="flex h-full w-full items-center justify-center">
+                <span
+                  *ngIf="showValue"
+                  class="flex h-full w-full items-center justify-center"
+                >
                   {{ disk.value }}
                 </span>
               </div>
@@ -174,36 +199,14 @@
     <div
       class="my-5 flex w-full items-center justify-center text-xl text-gray-500 dark:text-gray-400"
     >
-      步数：{{ steps() }}
-    </div>
-    <div
-      class="flex w-full items-center justify-center text-xl text-gray-500 dark:text-gray-400"
-    >
-      当前状态：{{ isCompleted() ? "✅已完成" : "❌未完成" }}
+      @if (isCompleted()) {
+        🎉恭喜🎉，经过 {{ steps() }}步的努力，完成游戏！
+      } @else {
+        步数：{{ steps() }}
+      }
     </div>
   </div>
 </div>
 
-<div
-  *ngIf="showHelp"
-  class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-2xl"
->
-  <button
-    class="fixed top-10 right-10 cursor-pointer text-4xl text-gray-600 dark:text-gray-200"
-    (click)="showHelp = false"
-  >
-    ✕
-  </button>
-  <div class="text-gray-600 dark:text-gray-200">
-    <h1 class="text-3xl font-bold">玩法说明</h1>
-    <p class="mt-5">1.汉诺塔有三个柱子，初始时，所有碟片都在左侧柱子。</p>
-    <p class="mt-5">2.使用鼠标可拖动碟片到其他柱子，只能移动最上面的碟片。</p>
-    <p class="mt-5">3.在移动时，只能小的碟片放到大的碟片上，而不能反过来。</p>
-    <p class="mt-5">
-      4.当所有碟片都移动到另外一个柱子上时（都移动到中间柱子或右侧柱子），游戏结束。
-    </p>
-    <p class="mt-5">5.游戏会记录操作步数，尽量用最少的步数完成碟片移动。</p>
-  </div>
-</div>
-
+<app-help *ngIf="showHelp" (onClose)="showHelp = false"></app-help>
 <app-scatter-flowers *ngIf="showSuccess"></app-scatter-flowers>

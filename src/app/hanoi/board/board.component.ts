@@ -35,6 +35,7 @@ export class HanoiBoardComponent implements OnInit {
 
   showHelp = false;
   showSuccess = false;
+  showValue = true;
 
   ngOnInit(): void {
     this.store.initBoard();
