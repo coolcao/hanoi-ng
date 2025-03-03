@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
-import { Message, PlayData, RoomInfo } from './online-board/online.type';
+import { Message, PlayData, RoomInfo } from './online.type';
 import { OnlineStore } from './online.store';
 
 
@@ -32,9 +32,7 @@ export class PeerService {
     const message: Message<PlayData> = {
       type: 'play-data',
       data: {
-        stack1: this.onlineStore.stack1(),
-        stack2: this.onlineStore.stack2(),
-        stack3: this.onlineStore.stack3(),
+        stacks: this.onlineStore.stacks(),
         steps: this.onlineStore.steps()
       }
     }
@@ -46,9 +44,7 @@ export class PeerService {
     this.onlineStore.setSize(data.size);
   }
   private handlePlayData(data: PlayData) {
-    this.onlineStore.setPeerStack1(data.stack1);
-    this.onlineStore.setPeerStack2(data.stack2);
-    this.onlineStore.setPeerStack3(data.stack3);
+    this.onlineStore.setPeerStacks(data.stacks);
     this.onlineStore.setPeerSteps(data.steps);
   }
 

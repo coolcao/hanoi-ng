@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { OnlineStore } from '../online.store';
 import { PeerService } from '../peer.service';
-import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-online-board',
@@ -15,19 +15,20 @@ export class HanoiOnlineBoardComponent implements OnInit {
   readonly onlineStore = inject(OnlineStore);
   readonly peerService = inject(PeerService);
 
-
   // store
   myId = this.onlineStore.myId;
   peerId = this.onlineStore.peerId;
-  stack1 = this.onlineStore.stack1;
-  stack2 = this.onlineStore.stack2;
-  stack3 = this.onlineStore.stack3;
+  stacks = this.onlineStore.stacks;
+  readonly stack1 = computed(() => this.stacks().stack1);
+  readonly stack2 = computed(() => this.stacks().stack2);
+  readonly stack3 = computed(() => this.stacks().stack3);
   steps = this.onlineStore.steps;
   peerSteps = this.onlineStore.peerSteps;
 
-  peerStack1 = this.onlineStore.peerStack1;
-  peerStack2 = this.onlineStore.peerStack2;
-  peerStack3 = this.onlineStore.peerStack3;
+  peerStacks = this.onlineStore.peerStacks;
+  readonly peerStack1 = computed(() => this.peerStacks().stack1);
+  readonly peerStack2 = computed(() => this.peerStacks().stack2);
+  readonly peerStack3 = computed(() => this.peerStacks().stack3);
 
   roomName = this.onlineStore.roomName;
   size = this.onlineStore.size;
@@ -71,9 +72,7 @@ export class HanoiOnlineBoardComponent implements OnInit {
       event.currentIndex,
     );
 
-    this.onlineStore.updateStack(this.stack1(), 'stack1');
-    this.onlineStore.updateStack(this.stack2(), 'stack2');
-    this.onlineStore.updateStack(this.stack3(), 'stack3');
+    this.onlineStore.updateStacks(this.stacks());
 
     this.peerService.sendPlayData();
 
