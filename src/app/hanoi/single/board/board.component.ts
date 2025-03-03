@@ -2,7 +2,6 @@ import { Component, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { timer } from 'rxjs';
 import { HanoiStore } from '../hanoi.store';
-import { Disk } from '../hanoi.types';
 
 @Component({
   selector: 'hanoi-board',
@@ -42,7 +41,7 @@ export class HanoiBoardComponent implements OnInit {
   }
 
 
-  drop(event: CdkDragDrop<Disk[]>) {
+  drop(event: CdkDragDrop<number[]>) {
     // const fromStackId = event.previousContainer.id;
     // const toStackId = event.container.id;
 
@@ -61,7 +60,7 @@ export class HanoiBoardComponent implements OnInit {
     const current = event.item.data;
     const containerTop = event.container.data[0];
     if (containerTop) {
-      if (current.value > containerTop.value) {
+      if (current > containerTop) {
         return;
       }
     }

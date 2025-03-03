@@ -63,24 +63,24 @@
           @for (disk of stack1(); track $index; let idx = $index) {
             @if (idx == 0 && !isCompleted()) {
               <div
-                [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
+                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
                 class="disk"
                 cdkDrag
                 [cdkDragData]="disk">
                 <span
                   *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center hover:cursor-grab">
-                  {{ disk.value }}
+                  {{ disk }}
                 </span>
               </div>
             } @else {
               <div
-                [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
+                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
                 class="disk select-none">
                 <span
                   *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center">
-                  {{ disk.value }}
+                  {{ disk }}
                 </span>
               </div>
             }
@@ -102,24 +102,24 @@
           @for (disk of stack2(); track $index; let idx = $index) {
             @if (idx == 0 && !isCompleted()) {
               <div
-                [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
+                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
                 class="disk"
                 cdkDrag
                 [cdkDragData]="disk">
                 <span
                   *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center hover:cursor-grab">
-                  {{ disk.value }}
+                  {{ disk }}
                 </span>
               </div>
             } @else {
               <div
-                [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
+                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
                 class="disk select-none">
                 <span
                   *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center">
-                  {{ disk.value }}
+                  {{ disk }}
                 </span>
               </div>
             }
@@ -141,24 +141,24 @@
           @for (disk of stack3(); track $index; let idx = $index) {
             @if (idx == 0 && !isCompleted()) {
               <div
-                [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
+                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
                 class="disk"
                 cdkDrag
                 [cdkDragData]="disk">
                 <span
                   *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center hover:cursor-grab">
-                  {{ disk.value }}
+                  {{ disk }}
                 </span>
               </div>
             } @else {
               <div
-                [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
+                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
                 class="disk select-none">
                 <span
                   *ngIf="showValue"
                   class="flex h-full w-full items-center justify-center">
-                  {{ disk.value }}
+                  {{ disk }}
                 </span>
               </div>
             }

@@ -1,5 +1,4 @@
 import { computed, Injectable, signal } from "@angular/core";
-import { Disk } from "./hanoi.types";
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +7,9 @@ export class HanoiStore {
   // 碟片数量，数量范围在 3~8即可
   private _size = signal(3);
 
-  private _stack1 = signal<Disk[]>([]);
-  private _stack2 = signal<Disk[]>([]);
-  private _stack3 = signal<Disk[]>([]);
+  private _stack1 = signal<number[]>([]);
+  private _stack2 = signal<number[]>([]);
+  private _stack3 = signal<number[]>([]);
 
   // 步数计数
   private _steps = signal(0);
@@ -34,7 +33,7 @@ export class HanoiStore {
   initBoard() {
     let stack = [];
     for (let i = 0; i < this.size(); i++) {
-      stack.push({ value: i + 1 });
+      stack.push(i + 1);
     }
     this._stack1.set(stack);
     this._stack2.set([]);
@@ -47,7 +46,7 @@ export class HanoiStore {
     this._steps.update(steps => steps + 1);
   }
 
-  updateStack(stack: Disk[], stackName: 'stack1' | 'stack2' | 'stack3') {
+  updateStack(stack: number[], stackName: 'stack1' | 'stack2' | 'stack3') {
     if (stackName == 'stack1') {
       this._stack1.set([...stack]);
     } else if (stackName == 'stack2') {
