@@ -1,13 +1,28 @@
 <div class="flex h-full w-full flex-col bg-gray-300 dark:bg-gray-600">
   <div
-    class="my-16 flex w-full justify-center text-2xl text-gray-600 dark:text-gray-200">
-    房间：{{ roomName() }}
+    class="my-16 flex w-full flex-col items-center justify-center text-2xl text-gray-600 dark:text-gray-200">
+    <div>房间：{{ roomName() }}</div>
+    <div class="mt-5 text-sm text-gray-500 dark:text-gray-400">
+      复制下面的我方ID，发给好友，邀请好友一起玩吧
+    </div>
+    <div class="mt-10 flex w-full items-center justify-center">
+      @if (winner() == myId()) {
+        <div>🎉🎉🎉恭喜，你赢了！</div>
+      } @else if (winner() == peerId()) {
+        <div>😭😭😭很遗憾，你输了！</div>
+      }
+    </div>
   </div>
 
   <div class="flex h-fit min-h-[680px] w-full items-center justify-center">
     <div class="h-full w-2/3 rounded-2xl p-10">
       <div class="mb-5 ml-5 h-10 text-base text-gray-500 dark:text-gray-400">
-        我方ID: {{ myId() }}
+        我方ID:
+        <button
+          class="cursor-pointer rounded-sm border border-solid p-1"
+          (click)="copyToClipboard(myId())">
+          {{ myId() }}
+        </button>
       </div>
       <div
         class="flex h-full w-full rounded-2xl bg-gray-200 p-10 dark:bg-gray-800">
@@ -130,7 +145,7 @@
           等待对方加入...
         }
       </div>
-      <div class="h-full w-full rounded-2xl bg-gray-200 p-10 dark:bg-gray-800">
+      <div class="h-full w-full rounded-2xl">
         <hanoi-online-preview
           [stack1]="peerStack1()"
           [stack2]="peerStack2()"

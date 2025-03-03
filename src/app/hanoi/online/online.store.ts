@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import { Tools } from "../tools.service";
 import { StackList } from "../hanoi.types";
 
@@ -33,6 +33,24 @@ export class OnlineStore {
   readonly peerStacks = this._peerStacks.asReadonly();
   readonly steps = this._steps.asReadonly();
   readonly peerSteps = this._peerSteps.asReadonly();
+
+  // 最后胜利者
+  readonly winner = computed(() => {
+    const isCompleted = this.stacks().stack1.length == 0 &&
+      (this.stacks().stack2.length == this.size() || this.stacks().stack3.length == this.size());
+    const peerCompleted = this.peerStacks().stack1.length == 0 &&
+      (this.peerStacks().stack2.length == this.size() || this.peerStacks().stack3.length == this.size());
+    if (isCompleted && peerCompleted) {
+      return 'all';
+    }
+    if (isCompleted) {
+      return this.myId();
+    }
+    if (peerCompleted) {
+      return this.peerId();
+    }
+    return 'none';
+  });
 
 
   setMyId(id: string) {

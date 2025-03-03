@@ -36,6 +36,8 @@ export class HanoiOnlineBoardComponent implements OnInit {
   roomName = this.onlineStore.roomName;
   size = this.onlineStore.size;
 
+  readonly winner = this.onlineStore.winner;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -57,6 +59,11 @@ export class HanoiOnlineBoardComponent implements OnInit {
       this.onlineStore.updateStacks(this.stacks());
       this.peerService.sendPlayData();
     }
+  }
+
+  copyToClipboard(id: string) {
+    navigator.clipboard.writeText(id);
+    alert('房间ID已复制到剪贴板');
   }
 
 }
