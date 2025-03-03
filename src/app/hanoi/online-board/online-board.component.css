@@ -1,0 +1,40 @@
+.cdk-drag-preview {
+  opacity: 0.5;
+  box-sizing: border-box;
+  border-radius: 5px;
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  /* 250ms是动画的持续时间 */
+  /* cubic-bezier(0, 0, 0.2, 1)是动画的缓动函数 */
+  /* 0, 0, 0.2, 1分别对应动画的起点、终点、控制点1、控制点2 */
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.disk {
+  width: 100%;
+  height: 26px;
+  border: 1px solid #ccc;
+  background-image: linear-gradient(to bottom, #10b981, #047857);
+  color: #fff;
+  border-radius: 12px;
+  user-select: none;
+
+  /* dark模式 */
+  @media (prefers-color-scheme: dark) {
+    background-image: linear-gradient(to bottom, #86efac, #059669);
+    color: #333;
+  }
+}
+
+.stack.cdk-drop-list-dragging .disk:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

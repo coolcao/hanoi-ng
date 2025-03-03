@@ -1,0 +1,15 @@
+.disk {
+  width: 100%;
+  height: 26px;
+  border: 1px solid #ccc;
+  background-image: linear-gradient(to bottom, #10b981, #047857);
+  color: #fff;
+  border-radius: 12px;
+  user-select: none;
+
+  /* dark模式 */
+  @media (prefers-color-scheme: dark) {
+    background-image: linear-gradient(to bottom, #86efac, #059669);
+    color: #333;
+  }
+}

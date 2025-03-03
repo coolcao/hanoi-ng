@@ -1,31 +1,25 @@
 <div
-  class="container flex min-h-screen min-w-screen flex-col items-center justify-center bg-gray-300 dark:bg-gray-600"
->
+  class="container flex min-h-screen min-w-screen flex-col items-center justify-center bg-gray-300 dark:bg-gray-600">
   <div
-    class="my-10 flex items-center justify-center text-3xl font-bold text-gray-800 dark:text-gray-200"
-  >
+    class="my-10 flex items-center justify-center text-3xl font-bold text-gray-800 dark:text-gray-200">
     汉诺塔
     <button (click)="showHelp = true">
       <img class="cursor-help dark:hidden" src="assets/icon/help.day.svg" />
       <img
         class="hidden cursor-help dark:block"
-        src="assets/icon/help.night.svg"
-      />
+        src="assets/icon/help.night.svg" />
     </button>
   </div>
   <div
-    class="flex h-[680px] w-[900px] flex-col items-center justify-center rounded-2xl bg-gray-200 shadow-2xl dark:bg-gray-800 dark:shadow-gray-500"
-  >
+    class="flex h-2/3 min-h-[600px] w-2/3 min-w-[800px] flex-col items-center justify-center rounded-2xl bg-gray-200 shadow-2xl dark:bg-gray-800 dark:shadow-gray-500">
     <div class="my-10 flex w-full items-center justify-around">
       <div
-        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200"
-      >
+        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200">
         碟片数量：
         <select
           [ngModel]="size()"
           (ngModelChange)="changeSize($event)"
-          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        >
+          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
           <option [ngValue]="3">3片</option>
           <option [ngValue]="4">4片</option>
           <option [ngValue]="5">5片</option>
@@ -36,22 +30,19 @@
         </select>
       </div>
       <div
-        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200"
-      >
+        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200">
         是否显示碟片标识：
         <select
           [ngModel]="showValue"
           (ngModelChange)="showValue = $event"
-          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        >
+          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
           <option [ngValue]="true">显示</option>
           <option [ngValue]="false">不显示</option>
         </select>
       </div>
       <button
         class="mr-2 cursor-pointer rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none lg:px-5 lg:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        (click)="restart()"
-      >
+        (click)="restart()">
         重新开始
       </button>
     </div>
@@ -64,38 +55,31 @@
         #stack1List="cdkDropList"
         [cdkDropListData]="stack1()"
         [cdkDropListConnectedTo]="[stack3List, stack2List]"
-        (cdkDropListDropped)="drop($event)"
-      >
+        (cdkDropListDropped)="drop($event)">
         <div
-          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"
-        ></div>
+          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
         <div
-          class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end"
-        >
+          class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
           @for (disk of stack1(); track $index; let idx = $index) {
             @if (idx == 0 && !isCompleted()) {
               <div
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
                 class="disk"
                 cdkDrag
-                [cdkDragData]="disk"
-              >
+                [cdkDragData]="disk">
                 <span
                   *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center hover:cursor-grab"
-                >
+                  class="flex h-full w-full items-center justify-center hover:cursor-grab">
                   {{ disk.value }}
                 </span>
               </div>
             } @else {
               <div
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
-                class="disk select-none"
-              >
+                class="disk select-none">
                 <span
                   *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center"
-                >
+                  class="flex h-full w-full items-center justify-center">
                   {{ disk.value }}
                 </span>
               </div>
@@ -110,38 +94,31 @@
         #stack2List="cdkDropList"
         [cdkDropListData]="stack2()"
         [cdkDropListConnectedTo]="[stack1List, stack3List]"
-        (cdkDropListDropped)="drop($event)"
-      >
+        (cdkDropListDropped)="drop($event)">
         <div
-          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"
-        ></div>
+          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
         <div
-          class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end"
-        >
+          class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
           @for (disk of stack2(); track $index; let idx = $index) {
             @if (idx == 0 && !isCompleted()) {
               <div
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
                 class="disk"
                 cdkDrag
-                [cdkDragData]="disk"
-              >
+                [cdkDragData]="disk">
                 <span
                   *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center hover:cursor-grab"
-                >
+                  class="flex h-full w-full items-center justify-center hover:cursor-grab">
                   {{ disk.value }}
                 </span>
               </div>
             } @else {
               <div
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
-                class="disk select-none"
-              >
+                class="disk select-none">
                 <span
                   *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center"
-                >
+                  class="flex h-full w-full items-center justify-center">
                   {{ disk.value }}
                 </span>
               </div>
@@ -156,38 +133,31 @@
         #stack3List="cdkDropList"
         [cdkDropListData]="stack3()"
         [cdkDropListConnectedTo]="[stack1List, stack2List]"
-        (cdkDropListDropped)="drop($event)"
-      >
+        (cdkDropListDropped)="drop($event)">
         <div
-          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"
-        ></div>
+          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
         <div
-          class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end"
-        >
+          class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
           @for (disk of stack3(); track $index; let idx = $index) {
             @if (idx == 0 && !isCompleted()) {
               <div
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
                 class="disk"
                 cdkDrag
-                [cdkDragData]="disk"
-              >
+                [cdkDragData]="disk">
                 <span
                   *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center hover:cursor-grab"
-                >
+                  class="flex h-full w-full items-center justify-center hover:cursor-grab">
                   {{ disk.value }}
                 </span>
               </div>
             } @else {
               <div
                 [ngStyle]="{ width: 100 + disk.value * 20 + 'px' }"
-                class="disk select-none"
-              >
+                class="disk select-none">
                 <span
                   *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center"
-                >
+                  class="flex h-full w-full items-center justify-center">
                   {{ disk.value }}
                 </span>
               </div>
@@ -197,8 +167,7 @@
       </div>
     </div>
     <div
-      class="my-5 flex w-full items-center justify-center text-xl text-gray-500 dark:text-gray-400"
-    >
+      class="my-5 flex w-full items-center justify-center text-xl text-gray-500 dark:text-gray-400">
       @if (isCompleted()) {
         🎉恭喜🎉，经过 {{ steps() }}步的努力，完成游戏！
       } @else {
