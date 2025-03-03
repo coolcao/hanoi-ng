@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { StackList } from "./hanoi.types";
 import { Tools } from "../tools.service";
+import { StackList } from "../hanoi.types";
 
 @Injectable({
   providedIn: 'root'

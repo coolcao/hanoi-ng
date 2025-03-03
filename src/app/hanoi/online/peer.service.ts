@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
-import { Message, PlayData, RoomInfo } from './online.type';
 import { OnlineStore } from './online.store';
+import { Message, PlayData, RoomInfo } from '../hanoi.types';
 
 
 
