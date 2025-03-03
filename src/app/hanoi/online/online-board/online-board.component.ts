@@ -1,7 +1,9 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
-import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { OnlineStore } from '../online.store';
 import { PeerService } from '../peer.service';
+import { MoveOperation } from '../../hanoi.types';
+import { HanoiService } from '../../hanoi.service';
 
 @Component({
   selector: 'app-online-board',
@@ -13,6 +15,7 @@ import { PeerService } from '../peer.service';
 export class HanoiOnlineBoardComponent implements OnInit {
 
   readonly onlineStore = inject(OnlineStore);
+  readonly hanoiService = inject(HanoiService);
   readonly peerService = inject(PeerService);
 
   // store
@@ -43,39 +46,17 @@ export class HanoiOnlineBoardComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<number[]>) {
-    if (event.previousContainer === event.container) {
-      // same stack
-      console.log('不能移动到同一个stack');
-      return;
+    const moveOperation: MoveOperation = {
+      fromId: event.previousContainer.id,
+      toId: event.container.id,
+      fromStack: event.previousContainer.data,
+      toStack: event.container.data,
+      disc: event.item.data,
+    };
+    if (this.hanoiService.moveDisc(moveOperation)) {
+      this.onlineStore.updateStacks(this.stacks());
+      this.peerService.sendPlayData();
     }
-
-    // 只能取到stack的最上面的disk
-    if (event.previousIndex !== 0) {
-      console.log('只能移动最上面的碟片');
-      return;
-    }
-    // 只能放到stack的最上面，所以event.currentIndex只能为0
-    const current = event.item.data;
-    const containerTop = event.container.data[0];
-    if (containerTop) {
-      if (current > containerTop) {
-        return;
-      }
-    }
-
-    event.currentIndex = 0;
-    // 根据itemData判断是否可以移动
-    transferArrayItem(
-      event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
-      event.currentIndex,
-    );
-
-    this.onlineStore.updateStacks(this.stacks());
-
-    this.peerService.sendPlayData();
-
   }
 
 }

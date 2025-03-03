@@ -2,6 +2,8 @@ import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { timer } from 'rxjs';
 import { SingleStore } from '../hanoi.store';
+import { HanoiService } from '../../hanoi.service';
+import { MoveOperation } from '../../hanoi.types';
 
 @Component({
   selector: 'hanoi-board',
@@ -13,6 +15,7 @@ import { SingleStore } from '../hanoi.store';
 export class HanoiBoardComponent implements OnInit {
 
   readonly store = inject(SingleStore);
+  readonly hanoiService = inject(HanoiService);
 
   constructor() {
     effect(() => {
@@ -44,41 +47,18 @@ export class HanoiBoardComponent implements OnInit {
 
 
   drop(event: CdkDragDrop<number[]>) {
-    // const fromStackId = event.previousContainer.id;
-    // const toStackId = event.container.id;
 
-    if (event.previousContainer === event.container) {
-      // same stack
-      console.log('不能移动到同一个stack');
-      return;
+    const moveOperation: MoveOperation = {
+      fromStack: event.previousContainer.data,
+      fromId: event.previousContainer.id,
+      toStack: event.container.data,
+      toId: event.container.id,
+      disc: event.item.data,
+    };
+    if (this.hanoiService.moveDisc(moveOperation)) {
+      this.store.addStep();
+      this.store.updateStackList({ stack1: this.stack1(), stack2: this.stack2(), stack3: this.stack3() });
     }
-
-    // 只能取到stack的最上面的disk
-    if (event.previousIndex !== 0) {
-      console.log('只能移动最上面的碟片');
-      return;
-    }
-    // 只能放到stack的最上面，所以event.currentIndex只能为0
-    const current = event.item.data;
-    const containerTop = event.container.data[0];
-    if (containerTop) {
-      if (current > containerTop) {
-        return;
-      }
-    }
-
-    event.currentIndex = 0;
-    // 根据itemData判断是否可以移动
-    transferArrayItem(
-      event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
-      event.currentIndex,
-    );
-
-    this.store.addStep();
-
-    this.store.updateStackList({ stack1: this.stack1(), stack2: this.stack2(), stack3: this.stack3() });
 
   }
 
