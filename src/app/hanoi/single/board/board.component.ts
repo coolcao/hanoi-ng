@@ -1,7 +1,7 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { timer } from 'rxjs';
-import { HanoiStore } from '../hanoi.store';
+import { SingleStore } from '../hanoi.store';
 
 @Component({
   selector: 'hanoi-board',
@@ -12,7 +12,7 @@ import { HanoiStore } from '../hanoi.store';
 })
 export class HanoiBoardComponent implements OnInit {
 
-  readonly store = inject(HanoiStore);
+  readonly store = inject(SingleStore);
 
   constructor() {
     effect(() => {
@@ -25,9 +25,11 @@ export class HanoiBoardComponent implements OnInit {
     });
   }
 
-  readonly stack1 = this.store.stack1;
-  readonly stack2 = this.store.stack2;
-  readonly stack3 = this.store.stack3;
+  readonly stackList = this.store.stackList;
+  readonly stack1 = computed(() => this.stackList().stack1);
+  readonly stack2 = computed(() => this.stackList().stack2);
+  readonly stack3 = computed(() => this.stackList().stack3);
+
   readonly steps = this.store.steps;
   readonly isCompleted = this.store.isCompleted;
   readonly size = this.store.size;
@@ -76,9 +78,8 @@ export class HanoiBoardComponent implements OnInit {
 
     this.store.addStep();
 
-    this.store.updateStack(this.stack1(), 'stack1');
-    this.store.updateStack(this.stack2(), 'stack2');
-    this.store.updateStack(this.stack3(), 'stack3');
+    this.store.updateStackList({ stack1: this.stack1(), stack2: this.stack2(), stack3: this.stack3() });
+
   }
 
   changeSize(size: number) {

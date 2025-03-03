@@ -1,28 +1,30 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
+import { StackList } from "./hanoi.types";
+import { Tools } from "../tools.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class HanoiStore {
+export class SingleStore {
+
+  readonly tools = inject(Tools);
+
   // 碟片数量，数量范围在 3~8即可
   private _size = signal(3);
 
-  private _stack1 = signal<number[]>([]);
-  private _stack2 = signal<number[]>([]);
-  private _stack3 = signal<number[]>([]);
+  private _stacks = signal<StackList>({ stack1: [], stack2: [], stack3: [] });
+
 
   // 步数计数
   private _steps = signal(0);
 
   readonly size = this._size.asReadonly();
-  readonly stack1 = this._stack1.asReadonly();
-  readonly stack2 = this._stack2.asReadonly();
-  readonly stack3 = this._stack3.asReadonly();
+  readonly stackList = this._stacks.asReadonly();
   readonly steps = this._steps.asReadonly();
 
   readonly isCompleted = computed(() => {
-    return this.stack1().length == 0 &&
-      (this.stack2().length == this.size() || this.stack3().length == this.size());
+    return this.stackList().stack1.length == 0 &&
+      (this.stackList().stack2.length == this.size() || this.stackList().stack3.length == this.size());
   });
 
 
@@ -35,9 +37,13 @@ export class HanoiStore {
     for (let i = 0; i < this.size(); i++) {
       stack.push(i + 1);
     }
-    this._stack1.set(stack);
-    this._stack2.set([]);
-    this._stack3.set([]);
+    const stackList = {
+      stack1: stack,
+      stack2: [],
+      stack3: []
+    };
+    this._stacks.set(stackList);
+
     this._steps.set(0);
   }
 
@@ -46,13 +52,8 @@ export class HanoiStore {
     this._steps.update(steps => steps + 1);
   }
 
-  updateStack(stack: number[], stackName: 'stack1' | 'stack2' | 'stack3') {
-    if (stackName == 'stack1') {
-      this._stack1.set([...stack]);
-    } else if (stackName == 'stack2') {
-      this._stack2.set([...stack]);
-    } else if (stackName == 'stack3') {
-      this._stack3.set([...stack]);
-    }
+  updateStackList(stacks: StackList) {
+    this._stacks.set(this.tools.deepClone(stacks));
   }
+
 }
