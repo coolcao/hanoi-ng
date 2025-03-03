@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { HanoiStore } from '../hanoi.store';
-import { PeerService } from '../peer.service';
-import { OnlineStore } from '../online.store';
+import { OnlineStore } from '../online/online.store';
+import { PeerService } from '../online/peer.service';
 
 @Component({
   selector: 'hanoi-start',
@@ -34,7 +33,7 @@ export class HanoiStartComponent {
     await this.peerService.connectToPeer(this.peerId);
 
     this.showJoin = false;
-    this.router.navigate(['/hanoi/online']);
+    this.router.navigate(['/', 'hanoi', 'online']);
   }
 
   async createRoom() {
@@ -52,6 +51,6 @@ export class HanoiStartComponent {
     await this.peerService.initPeer();
 
     this.showCreate = false;
-    this.router.navigate(['/hanoi/online']);
+    this.router.navigate(['/', 'hanoi', 'online']);
   }
 }

@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-online-preview',
+  selector: 'hanoi-online-preview',
   standalone: false,
 
   templateUrl: './online-preview.component.html',
   styleUrl: './online-preview.component.css'
 })
-export class OnlinePreviewComponent {
+export class HanoiOnlinePreviewComponent {
   @Input()
   stack1: number[] = [];
   @Input()
