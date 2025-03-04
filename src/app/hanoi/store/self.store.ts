@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { StackList } from "../hanoi.types";
 import { Tools } from "../tools.service";
 
@@ -12,10 +12,15 @@ export class SelfStore {
   private _id = signal('');
   private _stacks = signal<StackList>({ stack1: [], stack2: [], stack3: [] });
   private _steps = signal(0);
+  private _size = signal(0);
 
   readonly id = this._id.asReadonly();
   readonly stacks = this._stacks.asReadonly();
   readonly steps = this._steps.asReadonly();
+  readonly isCompleted = computed(() => {
+    return this.stacks().stack1.length == 0 &&
+      (this.stacks().stack2.length == this._size() || this.stacks().stack3.length == this._size())
+  });
 
   setId(id: string) {
     this._id.set(id);
@@ -28,6 +33,7 @@ export class SelfStore {
   }
 
   initStore(size: number) {
+    this._size.set(size);
     let stack = [];
     for (let i = 0; i < size; i++) {
       stack.push(i + 1);

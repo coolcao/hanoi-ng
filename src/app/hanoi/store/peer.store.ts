@@ -13,6 +13,7 @@ export class PeerStore {
   private _id = signal('');
   private _stacks = signal<StackList>({ stack1: [], stack2: [], stack3: [] });
   private _steps = signal(0);
+  private _size = signal(0);
 
   readonly id = this._id.asReadonly();
   readonly stacks = this._stacks.asReadonly();
@@ -31,6 +32,7 @@ export class PeerStore {
   }
 
   initStore(size: number) {
+    this._size.set(size);
     let stack = [];
     for (let i = 0; i < size; i++) {
       stack.push(size - i);

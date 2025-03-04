@@ -1,9 +1,10 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
-import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { timer } from 'rxjs';
-import { SingleStore } from '../hanoi.store';
 import { HanoiService } from '../../hanoi.service';
 import { MoveOperation } from '../../hanoi.types';
+import { SelfStore } from '../../store/self.store';
+import { Store } from '../../store/store';
 
 @Component({
   selector: 'hanoi-board',
@@ -14,7 +15,8 @@ import { MoveOperation } from '../../hanoi.types';
 })
 export class HanoiBoardComponent implements OnInit {
 
-  readonly store = inject(SingleStore);
+  readonly selfStore = inject(SelfStore);
+  readonly store = inject(Store);
   readonly hanoiService = inject(HanoiService);
 
   constructor() {
@@ -28,13 +30,13 @@ export class HanoiBoardComponent implements OnInit {
     });
   }
 
-  readonly stackList = this.store.stackList;
-  readonly stack1 = computed(() => this.stackList().stack1);
-  readonly stack2 = computed(() => this.stackList().stack2);
-  readonly stack3 = computed(() => this.stackList().stack3);
+  readonly stacks = this.selfStore.stacks;
+  readonly stack1 = computed(() => this.stacks().stack1);
+  readonly stack2 = computed(() => this.stacks().stack2);
+  readonly stack3 = computed(() => this.stacks().stack3);
 
-  readonly steps = this.store.steps;
-  readonly isCompleted = this.store.isCompleted;
+  readonly steps = this.selfStore.steps;
+  readonly isCompleted = this.selfStore.isCompleted;
   readonly size = this.store.size;
 
   showHelp = false;
@@ -42,7 +44,7 @@ export class HanoiBoardComponent implements OnInit {
   showValue = true;
 
   ngOnInit(): void {
-    this.store.initBoard();
+    this.selfStore.initStore(this.store.size());
   }
 
 
@@ -56,19 +58,19 @@ export class HanoiBoardComponent implements OnInit {
       disc: event.item.data,
     };
     if (this.hanoiService.moveDisc(moveOperation)) {
-      this.store.addStep();
-      this.store.updateStackList({ stack1: this.stack1(), stack2: this.stack2(), stack3: this.stack3() });
+      this.selfStore.setSteps(this.steps() + 1);
+      this.selfStore.setStacks({ stack1: this.stack1(), stack2: this.stack2(), stack3: this.stack3() });
     }
 
   }
 
   changeSize(size: number) {
     this.store.setSize(size);
-    this.store.initBoard();
+    this.selfStore.initStore(size);
   }
 
   restart() {
-    this.store.initBoard();
+    this.selfStore.initStore(this.store.size());
   }
 
 
