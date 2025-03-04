@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
-import { OnlineStore } from './online.store';
 import { Message, PlayData, RoomInfo } from '../hanoi.types';
 import { GameState } from './online.state';
+import { Store } from '../store/store';
+import { SelfStore } from '../store/self.store';
+import { PeerStore } from '../store/peer.store';
 
 
 
@@ -11,7 +13,9 @@ import { GameState } from './online.state';
 })
 export class PeerService {
 
-  readonly onlineStore = inject(OnlineStore);
+  private selfStore = inject(SelfStore);
+  private peerStore = inject(PeerStore);
+  readonly store = inject(Store);
 
   private peer: Peer | null = null;
   private conn: DataConnection | null = null;
@@ -30,8 +34,8 @@ export class PeerService {
     const roomInfo: Message<RoomInfo> = {
       type: 'room-info',
       data: {
-        roomName: this.onlineStore.roomName(),
-        size: this.onlineStore.size(),
+        roomName: this.store.roomName(),
+        size: this.store.size(),
       }
     }
     this.send(roomInfo);
@@ -40,20 +44,20 @@ export class PeerService {
     const message: Message<PlayData> = {
       type: 'play-data',
       data: {
-        stacks: this.onlineStore.stacks(),
-        steps: this.onlineStore.steps()
+        stacks: this.selfStore.stacks(),
+        steps: this.selfStore.steps()
       }
     }
     this.send(message);
   }
 
   private handleRoomInfo(data: RoomInfo) {
-    this.onlineStore.setRoomName(data.roomName);
-    this.onlineStore.setSize(data.size);
+    this.store.setRoomName(data.roomName);
+    this.store.setSize(data.size);
   }
   private handlePlayData(data: PlayData) {
-    this.onlineStore.setPeerStacks(data.stacks);
-    this.onlineStore.setPeerSteps(data.steps);
+    this.peerStore.setStacks(data.stacks);
+    this.peerStore.setSteps(data.steps);
   }
 
   private handleData(data: any) {
@@ -64,7 +68,7 @@ export class PeerService {
           // 更新房间信息
           const roomInfo = parsed.data as RoomInfo;
           this.handleRoomInfo(roomInfo);
-          this.onlineStore.init();
+          this.selfStore.initStore(this.store.size());
           this.sendPlayData();
           break;
         case 'play-data':
@@ -72,7 +76,7 @@ export class PeerService {
           this.handlePlayData(playData);
           break;
         case 'start-game':
-          this.onlineStore.setState(GameState.PLAYING);
+          this.store.setState(GameState.PLAYING);
           break;
         default:
           break;
@@ -90,9 +94,9 @@ export class PeerService {
       // 监听Peer连接成功
       this.peer.on('open', (id: string) => {
         console.log('我的peer ID是：', id);
-        this.onlineStore.setMyId(id);
-        this.onlineStore.init();
-        this.onlineStore.setState(GameState.WAITING);
+        this.selfStore.setId(id);
+        this.selfStore.initStore(this.store.size());
+        this.store.setState(GameState.WAITING);
         resolve(this.peer!);
       });
       this.peer.on('error', (err) => {
@@ -103,8 +107,8 @@ export class PeerService {
       this.peer.on('connection', async (conn: DataConnection) => {
         this.conn = conn;
         console.log('已建立连接，对方id:', conn.peer);
-        this.onlineStore.setPeerId(conn.peer);
-        this.onlineStore.setState(GameState.READY);
+        this.peerStore.setId(conn.peer);
+        this.store.setState(GameState.READY);
 
         this.conn.on('open', () => {
           this.sendStart();
@@ -135,7 +139,7 @@ export class PeerService {
 
       this.conn = this.peer.connect(peerId);
       this.conn.on('open', () => {
-        this.onlineStore.setPeerId(peerId);
+        this.peerStore.setId(peerId);
         this.sendStart();
         console.log('连接成功');
       });
