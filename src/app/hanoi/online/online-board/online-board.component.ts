@@ -1,9 +1,8 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PeerService } from '../peer.service';
-import { MoveOperation } from '../../hanoi.types';
+import { GameState, MoveOperation } from '../../hanoi.types';
 import { HanoiService } from '../../hanoi.service';
-import { GameState } from '../online.state';
 import { Store } from '../../store/store';
 import { SelfStore } from '../../store/self.store';
 import { PeerStore } from '../../store/peer.store';

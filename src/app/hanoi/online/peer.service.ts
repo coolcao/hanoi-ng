@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
-import { Message, PlayData, RoomInfo } from '../hanoi.types';
-import { GameState } from './online.state';
+import { GameState, Message, PlayData, RoomInfo } from '../hanoi.types';
 import { Store } from '../store/store';
 import { SelfStore } from '../store/self.store';
 import { PeerStore } from '../store/peer.store';

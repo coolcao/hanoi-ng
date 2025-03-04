@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { GameState } from "../online/online.state";
 import { SelfStore } from "./self.store";
 import { PeerStore } from "./peer.store";
+import { GameState } from "../hanoi.types";
 
 @Injectable({
   providedIn: 'root'
