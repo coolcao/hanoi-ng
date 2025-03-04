@@ -23,17 +23,15 @@ export class HanoiStartComponent {
   roomName = '';
   size = 3;
 
-
   async joinRoom() {
     if (!this.peerId) {
       console.log('请输入对方的房间ID');
       return;
     }
-    console.log('加入房间', this.peerId);
-    await this.peerService.connectToPeer(this.peerId);
-
+    // 存入OnlineStore
+    this.onlineStore.setPeerId(this.peerId);
     this.showJoin = false;
-    this.router.navigate(['/', 'hanoi', 'online']);
+    this.router.navigate(['/', 'hanoi', 'online'], { state: { action: 'join' } });
   }
 
   async createRoom() {
@@ -42,15 +40,12 @@ export class HanoiStartComponent {
       alert('请输入房间名');
       return;
     }
-    console.log('创建房间');
 
     // 存入OnlineStore
     this.onlineStore.setRoomName(this.roomName);
     this.onlineStore.setSize(this.size);
 
-    await this.peerService.initPeer();
-
     this.showCreate = false;
-    this.router.navigate(['/', 'hanoi', 'online']);
+    this.router.navigate(['/', 'hanoi', 'online'], { state: { action: 'create' } });
   }
 }

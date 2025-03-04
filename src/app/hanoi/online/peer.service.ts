@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
 import { OnlineStore } from './online.store';
 import { Message, PlayData, RoomInfo } from '../hanoi.types';
+import { GameState } from './online.state';
 
 
 
@@ -17,6 +18,13 @@ export class PeerService {
 
   constructor() { }
 
+  sendStart() {
+    const message: Message<''> = {
+      type: 'start-game',
+      data: ''
+    }
+    this.send(message);
+  }
   sendRoomInfo() {
     // 发送房间信息
     const roomInfo: Message<RoomInfo> = {
@@ -63,6 +71,9 @@ export class PeerService {
           const playData = parsed.data as PlayData;
           this.handlePlayData(playData);
           break;
+        case 'start-game':
+          this.onlineStore.setState(GameState.PLAYING);
+          break;
         default:
           break;
       }
@@ -81,6 +92,7 @@ export class PeerService {
         console.log('我的peer ID是：', id);
         this.onlineStore.setMyId(id);
         this.onlineStore.init();
+        this.onlineStore.setState(GameState.WAITING);
         resolve(this.peer!);
       });
       this.peer.on('error', (err) => {
@@ -92,8 +104,10 @@ export class PeerService {
         this.conn = conn;
         console.log('已建立连接，对方id:', conn.peer);
         this.onlineStore.setPeerId(conn.peer);
+        this.onlineStore.setState(GameState.READY);
 
         this.conn.on('open', () => {
+          this.sendStart();
           this.sendRoomInfo();
           this.sendPlayData();
         });
@@ -122,7 +136,7 @@ export class PeerService {
       this.conn = this.peer.connect(peerId);
       this.conn.on('open', () => {
         this.onlineStore.setPeerId(peerId);
-
+        this.sendStart();
         console.log('连接成功');
       });
 

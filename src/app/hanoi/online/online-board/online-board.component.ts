@@ -1,9 +1,11 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { OnlineStore } from '../online.store';
 import { PeerService } from '../peer.service';
 import { MoveOperation } from '../../hanoi.types';
 import { HanoiService } from '../../hanoi.service';
+import { GameState } from '../online.state';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-online-board',
@@ -13,6 +15,8 @@ import { HanoiService } from '../../hanoi.service';
   styleUrl: './online-board.component.css'
 })
 export class HanoiOnlineBoardComponent implements OnInit {
+
+  GameState = GameState;
 
   readonly onlineStore = inject(OnlineStore);
   readonly hanoiService = inject(HanoiService);
@@ -35,16 +39,43 @@ export class HanoiOnlineBoardComponent implements OnInit {
 
   roomName = this.onlineStore.roomName;
   size = this.onlineStore.size;
+  state = this.onlineStore.state;
 
   readonly winner = this.onlineStore.winner;
 
-  constructor() { }
+  // 创建房间loading
+  loading = false;
 
-  ngOnInit(): void {
-    if (this.peerService.isPeerInitialized()) {
-      return;
+  constructor() {
+    effect(() => {
+      const winner = this.winner();
+      if (winner !== 'none') {
+        this.onlineStore.setState(GameState.FINISHED);
+      }
+    });
+  }
+
+  async ngOnInit(): Promise<void> {
+
+    // 初始化peer客户端
+    this.loading = true;
+    await this.peerService.initPeer();
+    this.loading = false;
+
+    // 设置状态
+    this.onlineStore.setState(GameState.WAITING);
+
+    // 从state中获取action
+    const action = history.state.action;
+    if (action == 'join') {
+      this.loading = true;
+      const peerId = this.onlineStore.peerId();
+      if (peerId) {
+        await this.peerService.connectToPeer(peerId);
+        this.loading = false;
+        this.onlineStore.setState(GameState.READY);
+      }
     }
-    this.peerService.initPeer();
   }
 
   drop(event: CdkDragDrop<number[]>) {

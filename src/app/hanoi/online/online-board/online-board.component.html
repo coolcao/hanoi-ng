@@ -1,154 +1,129 @@
 <div class="flex h-full w-full flex-col bg-gray-300 dark:bg-gray-600">
-  <div
-    class="my-16 flex w-full flex-col items-center justify-center text-2xl text-gray-600 dark:text-gray-200">
+  <div class="mt-16 flex w-full flex-col items-center justify-center text-2xl text-gray-600 dark:text-gray-200">
     <div>房间：{{ roomName() }}</div>
     <div class="mt-5 text-sm text-gray-500 dark:text-gray-400">
+      @if (state() == GameState.WAITING) {
       复制下面的我方ID，发给好友，邀请好友一起玩吧
+      } @else if (state() == GameState.READY) {
+      对方已加入房间，游戏马上开始
+      } @else if (state() == GameState.PLAYING) {
+      游戏进行中。。。
+      } @else if (state() == GameState.FINISHED) {
+      游戏已结束
+      }
     </div>
     <div class="mt-10 flex w-full items-center justify-center">
       @if (winner() == myId()) {
-        <div>🎉🎉🎉恭喜，你赢了！</div>
+      <div>🎉🎉🎉恭喜，你赢了！</div>
       } @else if (winner() == peerId()) {
-        <div>😭😭😭很遗憾，你输了！</div>
+      <div>😭😭😭很遗憾，你输了！</div>
       }
     </div>
   </div>
 
   <div class="flex h-fit min-h-[680px] w-full items-center justify-center">
-    <div class="h-full w-2/3 rounded-2xl p-10">
+    <div class="h-full w-2/3 rounded-2xl p-10 relative">
       <div class="mb-5 ml-5 h-10 text-base text-gray-500 dark:text-gray-400">
         我方ID:
-        <button
-          class="cursor-pointer rounded-sm border border-solid p-1"
-          (click)="copyToClipboard(myId())">
+        <button class="cursor-pointer rounded-sm border border-solid p-1" (click)="copyToClipboard(myId())">
           {{ myId() }}
         </button>
       </div>
-      <div
-        class="flex h-full w-full rounded-2xl bg-gray-200 p-10 dark:bg-gray-800">
-        <div
-          id="stack1"
+      <div class="flex h-full w-full rounded-2xl bg-gray-200 p-10 dark:bg-gray-800 relative">
+        <div id="stack1"
           class="stack relative flex h-[400px] w-1/3 flex-col items-center justify-center border-b-2 border-gray-400"
-          cdkDropList
-          #stack1List="cdkDropList"
-          [cdkDropListData]="stack1()"
-          [cdkDropListConnectedTo]="[stack3List, stack2List]"
-          (cdkDropListDropped)="drop($event)">
+          cdkDropList #stack1List="cdkDropList" [cdkDropListData]="stack1()"
+          [cdkDropListConnectedTo]="[stack3List, stack2List]" (cdkDropListDropped)="drop($event)">
           <div
-            class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
-          <div
-            class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
+            class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400">
+          </div>
+          <div class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
             @for (disk of stack1(); track $index; let idx = $index) {
-              @if (idx == 0) {
-                <div
-                  [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                  class="disk"
-                  cdkDrag
-                  [cdkDragData]="disk">
-                  <span
-                    class="flex h-full w-full items-center justify-center hover:cursor-grab">
-                    {{ disk }}
-                  </span>
-                </div>
-              } @else {
-                <div
-                  [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                  class="disk select-none">
-                  <span class="flex h-full w-full items-center justify-center">
-                    {{ disk }}
-                  </span>
-                </div>
-              }
+            @if (idx == 0) {
+            <div [ngStyle]="{ width: 100 + disk * 20 + 'px' }" class="disk" cdkDrag [cdkDragData]="disk">
+              <span class="flex h-full w-full items-center justify-center hover:cursor-grab">
+                {{ disk }}
+              </span>
+            </div>
+            } @else {
+            <div [ngStyle]="{ width: 100 + disk * 20 + 'px' }" class="disk select-none">
+              <span class="flex h-full w-full items-center justify-center">
+                {{ disk }}
+              </span>
+            </div>
+            }
             }
           </div>
         </div>
-        <div
-          id="stack2"
+        <div id="stack2"
           class="stack relative flex h-[400px] w-1/3 flex-col items-center justify-center border-b-2 border-gray-400"
-          cdkDropList
-          #stack2List="cdkDropList"
-          [cdkDropListData]="stack2()"
-          [cdkDropListConnectedTo]="[stack1List, stack3List]"
-          (cdkDropListDropped)="drop($event)">
+          cdkDropList #stack2List="cdkDropList" [cdkDropListData]="stack2()"
+          [cdkDropListConnectedTo]="[stack1List, stack3List]" (cdkDropListDropped)="drop($event)">
           <div
-            class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
-          <div
-            class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
+            class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400">
+          </div>
+          <div class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
             @for (disk of stack2(); track $index; let idx = $index) {
-              @if (idx == 0) {
-                <div
-                  [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                  class="disk"
-                  cdkDrag
-                  [cdkDragData]="disk">
-                  <span
-                    class="flex h-full w-full items-center justify-center hover:cursor-grab">
-                    {{ disk }}
-                  </span>
-                </div>
-              } @else {
-                <div
-                  [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                  class="disk select-none">
-                  <span class="flex h-full w-full items-center justify-center">
-                    {{ disk }}
-                  </span>
-                </div>
-              }
+            @if (idx == 0) {
+            <div [ngStyle]="{ width: 100 + disk * 20 + 'px' }" class="disk" cdkDrag [cdkDragData]="disk">
+              <span class="flex h-full w-full items-center justify-center hover:cursor-grab">
+                {{ disk }}
+              </span>
+            </div>
+            } @else {
+            <div [ngStyle]="{ width: 100 + disk * 20 + 'px' }" class="disk select-none">
+              <span class="flex h-full w-full items-center justify-center">
+                {{ disk }}
+              </span>
+            </div>
+            }
             }
           </div>
         </div>
-        <div
-          id="stack3"
+        <div id="stack3"
           class="stack relative flex h-[400px] w-1/3 flex-col items-center justify-center border-b-2 border-gray-400"
-          cdkDropList
-          #stack3List="cdkDropList"
-          [cdkDropListData]="stack3()"
-          [cdkDropListConnectedTo]="[stack1List, stack2List]"
-          (cdkDropListDropped)="drop($event)">
+          cdkDropList #stack3List="cdkDropList" [cdkDropListData]="stack3()"
+          [cdkDropListConnectedTo]="[stack1List, stack2List]" (cdkDropListDropped)="drop($event)">
           <div
-            class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
-          <div
-            class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
+            class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400">
+          </div>
+          <div class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
             @for (disk of stack3(); track $index; let idx = $index) {
-              @if (idx == 0) {
-                <div
-                  [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                  class="disk"
-                  cdkDrag
-                  [cdkDragData]="disk">
-                  <span
-                    class="flex h-full w-full items-center justify-center hover:cursor-grab">
-                    {{ disk }}
-                  </span>
-                </div>
-              } @else {
-                <div
-                  [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                  class="disk select-none">
-                  <span class="flex h-full w-full items-center justify-center">
-                    {{ disk }}
-                  </span>
-                </div>
-              }
+            @if (idx == 0) {
+            <div [ngStyle]="{ width: 100 + disk * 20 + 'px' }" class="disk" cdkDrag [cdkDragData]="disk">
+              <span class="flex h-full w-full items-center justify-center hover:cursor-grab">
+                {{ disk }}
+              </span>
+            </div>
+            } @else {
+            <div [ngStyle]="{ width: 100 + disk * 20 + 'px' }" class="disk select-none">
+              <span class="flex h-full w-full items-center justify-center">
+                {{ disk }}
+              </span>
+            </div>
+            }
             }
           </div>
         </div>
+        <div *ngIf="loading"
+          class="absolute inset-0 backdrop-blur-2xl rounded-2xl flex justify-center items-center text-gray-600 dark:text-gray-100">
+          请稍等，正在加载中...
+        </div>
+
       </div>
+
     </div>
     <div class="h-full w-1/3 p-10">
       <div class="mb-5 ml-5 h-10 text-base text-gray-500 dark:text-gray-400">
         对方ID:
         @if (peerId()) {
-          {{ peerId() }}
+        {{ peerId() }}
         } @else {
-          等待对方加入...
+        等待对方加入...
         }
       </div>
-      <div class="h-full w-full rounded-2xl">
-        <hanoi-online-preview
-          [stack1]="peerStack1()"
-          [stack2]="peerStack2()"
+      <div class="h-full w-full rounded-2xl relative">
+        <hanoi-online-preview [stack1]="peerStack1()" [stack2]="peerStack2()"
           [stack3]="peerStack3()"></hanoi-online-preview>
       </div>
     </div>

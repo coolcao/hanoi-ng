@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import { Tools } from "../tools.service";
 import { StackList } from "../hanoi.types";
+import { GameState } from "./online.state";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class OnlineStore {
   // 全局
   private _size = signal(5);
   private _roomName = signal('');
+  private _state = signal<GameState>(GameState.INITIAL);
 
 
   // 已方
@@ -33,6 +35,7 @@ export class OnlineStore {
   readonly peerStacks = this._peerStacks.asReadonly();
   readonly steps = this._steps.asReadonly();
   readonly peerSteps = this._peerSteps.asReadonly();
+  readonly state = this._state.asReadonly();
 
   // 最后胜利者
   readonly winner = computed(() => {
@@ -88,6 +91,10 @@ export class OnlineStore {
     }
     this._stacks.set({ stack1: stack, stack2: [], stack3: [] });
     this._steps.set(0);
+  }
+
+  setState(state: GameState) {
+    this._state.set(state);
   }
 
 }
