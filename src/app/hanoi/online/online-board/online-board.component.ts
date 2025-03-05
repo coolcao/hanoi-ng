@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PeerService } from '../peer.service';
-import { GameState, MoveOperation } from '../../hanoi.types';
+import { GameState, StackKey } from '../../hanoi.types';
 import { HanoiService } from '../../hanoi.service';
 import { Store } from '../../store/store';
 import { SelfStore } from '../../store/self.store';
@@ -81,17 +81,16 @@ export class HanoiOnlineBoardComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<number[]>) {
-    const moveOperation: MoveOperation = {
-      fromId: event.previousContainer.id,
-      toId: event.container.id,
-      fromStack: event.previousContainer.data,
-      toStack: event.container.data,
+
+    const stacks = this.hanoiService.move({
+      stacks: this.stacks(),
+      from: event.previousContainer.id as StackKey,
+      to: event.container.id as StackKey,
       disc: event.item.data,
-    };
-    if (this.hanoiService.moveDisc(moveOperation)) {
-      this.selfStore.setStacks(this.stacks());
-      this.peerService.sendPlayData();
-    }
+    });
+    this.selfStore.setStacks(stacks);
+    this.peerService.sendPlayData();
+
   }
 
   copyToClipboard(id: string) {
