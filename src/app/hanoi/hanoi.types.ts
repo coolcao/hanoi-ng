@@ -9,28 +9,49 @@ export interface RoomInfo {
   size: number;
 }
 
-// 游戏数据
-export interface PlayData {
-  stacks: StackList;
-  steps: number;
+export interface PlayerInfo {
+  name: string;
 }
-export interface Message<T> {
-  type: 'room-info' | 'start-game' | 'play-data';
-  data: T;
+
+export enum PeerEventType {
+  ROOM_INFO = 'room-info',
+  PLAYER_INFO = 'player-info',
+  READY = 'ready',
+  MOVE = 'move',
 }
+export interface PeerDataEvent<T> {
+  event: PeerEventType;
+  data: T
+}
+
+
 export type StackKey = 'stack1' | 'stack2' | 'stack3';
-export interface MoveEventData {
+export interface MoveOperation {
   stacks: StackList; // 使用元组类型限制为三个子数组
   from: StackKey;   // 移动的来源堆栈
   to: StackKey;   // 移动的目标堆栈
   disc: number; // 移动的碟片
 }
+export interface MoveEventData {
+  from: StackKey;   // 移动的来源堆栈
+  to: StackKey;   // 移动的目标堆栈
+  disc: number; // 移动的碟片
+}
+
+export enum PlayerState {
+  INITIAL = 'initial',
+  READY = 'ready',
+  PLAYING = 'playing',
+  FINISHED = 'finished',
+  WIN = 'win',
+  LOSE = 'lose',
+}
 
 export enum GameState {
-  INITIAL = 'initial',    // 初始状态
-  WAITING = 'waiting',    // 主方已创建房间，等待对方加入
-  READY = 'ready',        // 对方已加入，准备开始
-  PLAYING = 'playing',    // 双方正在游戏中
-  FINISHED = 'finished',   // 有一方已完成游戏，已决出胜利者
-  ERROR = 'error'
+  INITIAL = 'initial',  // 初始状态
+  WAITING = 'waiting',  // 等待对方准备
+  PEER_CONNECTED = 'peer-connected', // 对方已连接
+  READY = 'ready',       // 双方都已准备好
+  STARTED = 'started',  // 游戏开始
+  FINISHED = 'finished', // 游戏结束
 }

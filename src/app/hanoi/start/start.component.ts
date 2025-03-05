@@ -25,6 +25,7 @@ export class HanoiStartComponent {
 
   showCreate = false;
   roomName = '';
+  playerName = '';
   size = 3;
 
   async joinRoom() {
@@ -32,6 +33,11 @@ export class HanoiStartComponent {
       console.log('请输入对方的房间ID');
       return;
     }
+    if (!this.playerName) {
+      console.log('请输入你的名字');
+      return;
+    }
+    this.selfStore.setPlayer(this.playerName);
     this.peerStore.setId(this.peerId);
     this.showJoin = false;
     this.router.navigate(['/', 'hanoi', 'online'], { state: { action: 'join' } });
@@ -43,7 +49,13 @@ export class HanoiStartComponent {
       alert('请输入房间名');
       return;
     }
+    if (!this.playerName) {
+      console.log('请输入你的名字');
+      alert('请输入你的名字');
+      return;
+    }
 
+    this.selfStore.setPlayer(this.playerName);
     this.store.setRoomName(this.roomName);
     this.store.setSize(this.size);
 

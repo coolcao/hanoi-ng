@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { timer } from 'rxjs';
 import { HanoiService } from '../../hanoi.service';
-import { StackKey } from '../../hanoi.types';
+import { MoveOperation, StackKey } from '../../hanoi.types';
 import { SelfStore } from '../../store/self.store';
 import { Store } from '../../store/store';
 
@@ -49,13 +49,14 @@ export class HanoiBoardComponent implements OnInit {
 
 
   drop(event: CdkDragDrop<number[]>) {
-    const stacks = this.hanoiService.move({
+    const moveOperation: MoveOperation = {
       stacks: this.stacks(),
       from: event.previousContainer.id as StackKey,
       to: event.container.id as StackKey,
       disc: event.item.data,
-    });
-    this.selfStore.setSteps(this.steps() + 1);
+    };
+    const stacks = this.hanoiService.move(moveOperation);
+    this.selfStore.addSteps();
     this.selfStore.setStacks(stacks);
   }
 

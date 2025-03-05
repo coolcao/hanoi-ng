@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
-import { MoveEventData, StackList } from "./hanoi.types";
+import { MoveOperation, StackList } from "./hanoi.types";
 
 @Injectable({
   providedIn: "root",
 })
 export class HanoiService {
 
-  validateMoveEvent(data: MoveEventData): boolean {
+  validateMoveEvent(data: MoveOperation): boolean {
     const stacks = data.stacks;
     const from = data.from;
     const to = data.to;
@@ -28,7 +28,7 @@ export class HanoiService {
     return true;
   }
 
-  move(moveData: MoveEventData): StackList {
+  move(moveData: MoveOperation): StackList {
     if (!this.validateMoveEvent(moveData)) {
       return moveData.stacks;
     }

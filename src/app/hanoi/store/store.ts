@@ -14,11 +14,11 @@ export class Store {
 
   // 联网模式独有的状态
   private _roomName = signal('');
-  private _state = signal<GameState>(GameState.INITIAL);
+  private _gameState = signal(GameState.INITIAL);
 
   readonly size = this._size.asReadonly();
   readonly roomName = this._roomName.asReadonly();
-  readonly state = this._state.asReadonly();
+  readonly gameState = this._gameState.asReadonly();
 
   // 最后胜利者
   // none表示游戏未结束，all表示双方都已完成（考虑到后面的玩家会在对方结束后会继续玩）
@@ -45,10 +45,10 @@ export class Store {
   setSize(size: number) {
     this._size.set(size);
   }
-  setState(state: GameState) {
-    this._state.set(state);
-  }
   setRoomName(roomName: string) {
     this._roomName.set(roomName);
+  }
+  setGameState(state: GameState) {
+    this._gameState.set(state);
   }
 }
