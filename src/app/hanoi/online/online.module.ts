@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { OnlineRoutingModule } from './online-routing.module';
 import { HanoiOnlineBoardComponent } from './online-board/online-board.component';
 import { HanoiOnlinePreviewComponent } from './online-preview/online-preview.component';
+import { ShareModule } from '../../share/share.module';
 
 
 
@@ -20,6 +21,7 @@ import { HanoiOnlinePreviewComponent } from './online-preview/online-preview.com
     OnlineRoutingModule,
     DragDropModule,
     FormsModule,
+    ShareModule,
   ]
 })
 export class OnlineModule { }

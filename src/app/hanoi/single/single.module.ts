@@ -4,8 +4,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 
 import { SingleRoutingModule } from './single-routing.module';
-import { ShareModule } from '../share/share.module';
 import { HanoiBoardComponent } from './board/board.component';
+import { ShareModule } from '../../share/share.module';
 
 
 

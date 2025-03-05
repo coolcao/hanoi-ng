@@ -4,6 +4,7 @@ import { PeerService } from '../online/peer.service';
 import { Store } from '../store/store';
 import { SelfStore } from '../store/self.store';
 import { PeerStore } from '../store/peer.store';
+import { AlertService } from '../../share/alert/alert.service';
 
 @Component({
   selector: 'hanoi-start',
@@ -13,6 +14,7 @@ import { PeerStore } from '../store/peer.store';
   styleUrl: './start.component.css'
 })
 export class HanoiStartComponent {
+  private alert = inject(AlertService);
   private selfStore = inject(SelfStore);
   private peerStore = inject(PeerStore);
   private store = inject(Store);
@@ -46,12 +48,12 @@ export class HanoiStartComponent {
   async createRoom() {
     if (!this.roomName) {
       console.log('请输入房间名');
-      alert('请输入房间名');
+      this.alert.error('请输入房间名');
       return;
     }
     if (!this.playerName) {
       console.log('请输入你的名字');
-      alert('请输入你的名字');
+      this.alert.error('请输入你的名字');
       return;
     }
 

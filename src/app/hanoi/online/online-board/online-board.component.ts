@@ -8,6 +8,7 @@ import { HanoiService } from '../../hanoi.service';
 import { Store } from '../../store/store';
 import { SelfStore } from '../../store/self.store';
 import { PeerStore } from '../../store/peer.store';
+import { AlertService } from '../../../share/alert/alert.service';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class HanoiOnlineBoardComponent implements OnInit {
   readonly hanoiService = inject(HanoiService);
   readonly peerService = inject(PeerService);
   readonly router = inject(Router);
+  readonly alert = inject(AlertService);
 
   // store
   myId = this.selfStore.id;
@@ -67,13 +69,13 @@ export class HanoiOnlineBoardComponent implements OnInit {
     effect(() => {
       const winner = this.winner();
       if (winner === 'all') {
-        alert('双方都已完成，游戏结束');
+        this.alert.info('双方都已完成，游戏结束');
       } else if (winner === this.myId()) {
         this.selfStore.setPlayerState(PlayerState.WIN);
-        alert('你已获胜');
+        this.alert.success('恭喜，您已获胜');
       } else if (winner === this.peerId()) {
         this.peerStore.setPlayerState(PlayerState.WIN);
-        alert('对方已获胜');
+        this.alert.error('抱歉，对方已率先完成，您还可以继续挑战');
       }
 
       if (this.myState() === PlayerState.READY && this.peerState() === PlayerState.READY) {
@@ -143,7 +145,9 @@ export class HanoiOnlineBoardComponent implements OnInit {
 
   copyToClipboard(id: string) {
     navigator.clipboard.writeText(id);
-    alert('房间ID已复制到剪贴板');
+    this.alert.success('房间ID已复制到剪贴板');
+    console.log('复制成功');
+
   }
 
   ready() {
