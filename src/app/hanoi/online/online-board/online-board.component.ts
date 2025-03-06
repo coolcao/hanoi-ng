@@ -97,8 +97,9 @@ export class HanoiOnlineBoardComponent implements OnInit {
   }
 
   ngOnInit() {
-
-
+    if (this.store.isHost() === null) {
+      this.router.navigate(['/', 'hanoi', 'start']);
+    }
   }
 
   drop(event: CdkDragDrop<number[]>) {

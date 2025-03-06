@@ -11,7 +11,7 @@ export class Store {
   readonly peerStore = inject(PeerStore);
   // 通用
   private _size = signal(3);
-  private _isHost = signal(false);
+  private _isHost = signal<boolean|null>(null);
 
   // 联网模式独有的状态
   private _gameState = signal(GameState.INITIAL);
