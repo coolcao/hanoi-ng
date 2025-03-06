@@ -33,11 +33,9 @@ export class HanoiOnlineBoardComponent implements OnInit {
 
   // store
   myId = this.selfStore.id;
-  myName = this.selfStore.player;
   myState = this.selfStore.state;
 
   peerId = this.peerStore.id;
-  peerName = this.peerStore.player;
   peerState = this.peerStore.state;
 
   stacks = this.selfStore.stacks;
@@ -52,7 +50,6 @@ export class HanoiOnlineBoardComponent implements OnInit {
   readonly peerStack2 = computed(() => this.peerStacks().stack2);
   readonly peerStack3 = computed(() => this.peerStacks().stack3);
 
-  roomName = this.store.roomName;
   size = this.store.size;
   state = this.store.gameState;
 

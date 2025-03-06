@@ -5,17 +5,12 @@ export interface StackList {
 }
 
 export interface RoomInfo {
-  roomName: string;
   size: number;
 }
 
-export interface PlayerInfo {
-  name: string;
-}
 
 export enum PeerEventType {
   ROOM_INFO = 'room-info',
-  PLAYER_INFO = 'player-info',
   READY = 'ready',
   MOVE = 'move',
 }

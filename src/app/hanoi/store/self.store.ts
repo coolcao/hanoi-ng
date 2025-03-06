@@ -10,14 +10,12 @@ export class SelfStore {
   private readonly tools = inject(Tools);
 
   private _id = signal('');
-  private _player = signal('');
   private _stacks = signal<StackList>({ stack1: [], stack2: [], stack3: [] });
   private _steps = signal(0);
   private _size = signal(0);
   private _playerState = signal<PlayerState>(PlayerState.INITIAL);
 
   readonly id = this._id.asReadonly();
-  readonly player = this._player.asReadonly();
   readonly stacks = this._stacks.asReadonly();
   readonly steps = this._steps.asReadonly();
   readonly state = this._playerState.asReadonly();
@@ -29,9 +27,7 @@ export class SelfStore {
   setId(id: string) {
     this._id.set(id);
   }
-  setPlayer(player: string) {
-    this._player.set(player);
-  }
+
   setStacks(stacks: StackList) {
     this._stacks.set(this.tools.deepClone(stacks));
   }

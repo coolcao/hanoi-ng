@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
-import { GameState, MoveEventData, MoveOperation, PeerDataEvent, PeerEventType, PlayerInfo, PlayerState, RoomInfo } from '../hanoi.types';
+import { GameState, MoveEventData, MoveOperation, PeerDataEvent, PeerEventType, PlayerState, RoomInfo } from '../hanoi.types';
 import { Store } from '../store/store';
 import { SelfStore } from '../store/self.store';
 import { PeerStore } from '../store/peer.store';
@@ -25,7 +25,6 @@ export class PeerService {
     [
       [PeerEventType.ROOM_INFO, (data: RoomInfo) => this.handleRoomInfo(data)],
       [PeerEventType.MOVE, (data: MoveEventData) => this.handleMoveEvent(data)],
-      [PeerEventType.PLAYER_INFO, (data: PlayerInfo) => this.handlePlayerInfo(data)],
       [PeerEventType.READY, () => this.handleReady()],
     ]
   );
@@ -43,22 +42,12 @@ export class PeerService {
     const roomInfo: PeerDataEvent<RoomInfo> = {
       event: PeerEventType.ROOM_INFO,
       data: {
-        roomName: this.store.roomName(),
         size: this.store.size(),
       }
     }
     this.send(roomInfo);
   }
-  sendPlayerInfo() {
-    // 发送玩家信息
-    const playerInfo: PeerDataEvent<PlayerInfo> = {
-      event: PeerEventType.PLAYER_INFO,
-      data: {
-        name: this.selfStore.player(),
-      }
-    }
-    this.send(playerInfo);
-  }
+
   sendMove(data: MoveEventData) {
     const event: PeerDataEvent<MoveEventData> = {
       data,
@@ -71,9 +60,7 @@ export class PeerService {
   private handleReady() {
     this.peerStore.setPlayerState(PlayerState.READY);
   }
-  private handlePlayerInfo(data: PlayerInfo) {
-    this.peerStore.setPlayer(data.name);
-  }
+
   private handleMoveEvent(data: MoveEventData) {
     const moveOperation: MoveOperation = {
       stacks: this.peerStore.stacks(),
@@ -86,8 +73,11 @@ export class PeerService {
     this.peerStore.addSteps();
   }
   private handleRoomInfo(data: RoomInfo) {
-    this.store.setRoomName(data.roomName);
+    console.log('房间信息', data);
+
     this.store.setSize(data.size);
+    this.peerStore.initStore(this.store.size());
+    this.selfStore.initStore(this.store.size());
   }
 
   // 设置连接
@@ -115,9 +105,7 @@ export class PeerService {
   // 连接事件处理
   private setupConnectionEvents(conn: DataConnection) {
     conn.on('open', () => {
-      this.sendPlayerInfo();
       this.peerStore.setId(conn.peer);
-      this.peerStore.initStore(this.store.size());
     });
 
     conn.on('error', (err) => {
@@ -131,6 +119,7 @@ export class PeerService {
       this.setupConnection(conn);
       conn.on('open', () => {
         this.store.setGameState(GameState.PEER_CONNECTED);
+        this.peerStore.initStore(this.store.size());
         this.sendRoomInfo();
       });
     });

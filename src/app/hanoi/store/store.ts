@@ -13,11 +13,9 @@ export class Store {
   private _size = signal(3);
 
   // 联网模式独有的状态
-  private _roomName = signal('');
   private _gameState = signal(GameState.INITIAL);
 
   readonly size = this._size.asReadonly();
-  readonly roomName = this._roomName.asReadonly();
   readonly gameState = this._gameState.asReadonly();
 
   // 最后胜利者
@@ -45,9 +43,7 @@ export class Store {
   setSize(size: number) {
     this._size.set(size);
   }
-  setRoomName(roomName: string) {
-    this._roomName.set(roomName);
-  }
+
   setGameState(state: GameState) {
     this._gameState.set(state);
   }

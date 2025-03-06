@@ -77,31 +77,6 @@
       ✕
     </button>
     <label
-      for="roomName"
-      class="mt-2 mb-1 block text-sm font-medium text-gray-900 dark:text-white">
-      房间名称
-    </label>
-    <input
-      type="text"
-      id="roomName"
-      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      placeholder="请输入房间名称"
-      [(ngModel)]="roomName"
-      required />
-
-    <label
-      for="playerName"
-      class="mt-2 mb-1 block text-sm font-medium text-gray-900 dark:text-white"
-      >您的名称</label
-    >
-    <input
-      type="text"
-      id="playerName"
-      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      placeholder="请输入您的名称"
-      [(ngModel)]="playerName"
-      required />
-    <label
       for="size"
       class="mt-2 mb-1 block text-sm font-medium text-gray-900 dark:text-white"
       >碟片数量</label
@@ -151,18 +126,7 @@
       placeholder="请输入对方的房间ID"
       [(ngModel)]="peerId"
       required />
-    <label
-      for="playerName"
-      class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-      >您的名称</label
-    >
-    <input
-      type="text"
-      id="playerName"
-      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      placeholder="请输入对方的房间ID"
-      [(ngModel)]="playerName"
-      required />
+
     <div class="my-10 flex w-full items-center justify-center">
       <button
         (click)="joinRoom()"
