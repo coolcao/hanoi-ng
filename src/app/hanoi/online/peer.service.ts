@@ -21,14 +21,11 @@ export class PeerService {
 
   constructor() { }
 
-  private peerDataEventHandlers = new Map<PeerEventType, (data: any) => void>(
-    [
-      [PeerEventType.ROOM_INFO, (data: RoomInfo) => this.handleRoomInfo(data)],
-      [PeerEventType.MOVE, (data: MoveEventData) => this.handleMoveEvent(data)],
-      [PeerEventType.READY, () => this.handleReady()],
-    ]
-  );
-
+  private peerDataEventHandlers = {
+    [PeerEventType.ROOM_INFO]: (data: RoomInfo) => this.handleRoomInfo(data),
+    [PeerEventType.MOVE]: (data: MoveEventData) => this.handleMoveEvent(data),
+    [PeerEventType.READY]: () => this.handleReady(),
+  };
 
   sendReady() {
     const event: PeerDataEvent<null> = {
@@ -95,7 +92,8 @@ export class PeerService {
     conn.on('data', (data: any) => {
       try {
         const parsed = JSON.parse(data) as PeerDataEvent<any>;
-        this.peerDataEventHandlers.get(parsed.event)?.(parsed.data);
+        const handler = this.peerDataEventHandlers[parsed.event];
+        handler?.(parsed.data);
       } catch (error) {
         console.error('消息处理失败', error);
       }
