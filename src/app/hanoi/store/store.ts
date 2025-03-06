@@ -11,12 +11,14 @@ export class Store {
   readonly peerStore = inject(PeerStore);
   // 通用
   private _size = signal(3);
+  private _isHost = signal(false);
 
   // 联网模式独有的状态
   private _gameState = signal(GameState.INITIAL);
 
   readonly size = this._size.asReadonly();
   readonly gameState = this._gameState.asReadonly();
+  readonly isHost = this._isHost.asReadonly();
 
   // 最后胜利者
   // none表示游戏未结束，all表示双方都已完成（考虑到后面的玩家会在对方结束后会继续玩）
@@ -46,5 +48,8 @@ export class Store {
 
   setGameState(state: GameState) {
     this._gameState.set(state);
+  }
+  setIsHost(isHost: boolean) {
+    this._isHost.set(isHost);
   }
 }

@@ -19,7 +19,65 @@ export class PeerService {
   private peer: Peer | null = null;
   private conn: DataConnection | null = null;
 
-  constructor() { }
+  constructor() {
+    this.initPeer();
+   }
+
+  private connectionHandlers = {
+    handleOpen: (conn: DataConnection) => {
+      conn.on('open', () => {
+        const peerId = conn.peer;
+        this.peerStore.setId(peerId);
+        this.selfStore.initStore(this.store.size());
+        this.peerStore.initStore(this.store.size());
+        this.store.setGameState(GameState.PEER_CONNECTED);
+        if (this.store.isHost()) {
+          console.log(`对方[${peerId}]已加入`);
+          this.sendRoomInfo();
+        } else {
+          console.log(`已加入房间[${peerId}]`);
+        }
+      });
+    },
+    handleError: (conn: DataConnection) => {
+      conn.on('error', (err) => {
+        console.error('连接错误：', err);
+      });
+    },
+    handleData: (conn: DataConnection) => {
+      conn.on('data', (data: any) => {
+        try {
+          const parsed = JSON.parse(data) as PeerDataEvent<any>;
+          const handler = this.peerDataEventHandlers[parsed.event];
+          handler?.(parsed.data);
+        } catch (error) {
+          console.error('消息处理失败', error);
+        }
+      });
+    },
+  };
+  private peerHandlers = {
+    handleConnection: (peer: Peer) => {
+      peer.on('connection', (conn: DataConnection) => {
+        this.conn = conn;
+        this.connectionHandlers.handleOpen(conn);
+        this.connectionHandlers.handleData(conn);
+        this.connectionHandlers.handleError(conn);
+      });
+    },
+    handleOpen: (peer: Peer) => {
+      peer.on('open', (id: string) => {
+        console.log('peer 客户端已实例化，我的PeerId:' + id);
+        this.selfStore.setId(id);
+        this.store.setGameState(GameState.WAITING);
+      });
+    },
+    handleError: (peer: Peer) => {
+      peer.on('error', (err) => {
+        console.error('Peer实例化错误', err);
+      });
+    },
+  };
 
   private peerDataEventHandlers = {
     [PeerEventType.ROOM_INFO]: (data: RoomInfo) => this.handleRoomInfo(data),
@@ -70,104 +128,49 @@ export class PeerService {
     this.peerStore.addSteps();
   }
   private handleRoomInfo(data: RoomInfo) {
-    console.log('房间信息', data);
-
     this.store.setSize(data.size);
     this.peerStore.initStore(this.store.size());
     this.selfStore.initStore(this.store.size());
   }
 
-  // 设置连接
-  private setupConnection(conn: DataConnection) {
-    this.conn = conn;
+  initPeer() {
+    const peer = new Peer();
+    this.peer = peer;
 
-    // 设置监听data事件
-    this.setupDataHandler(conn);
-    // 设置监听conn事件
-    this.setupConnectionEvents(conn);
-  }
+    this.peerHandlers.handleOpen(this.peer);
+    this.peerHandlers.handleConnection(this.peer);
+    this.peerHandlers.handleError(this.peer);
 
-  // 统一的数据处理管道
-  private setupDataHandler(conn: DataConnection) {
-    conn.on('data', (data: any) => {
-      try {
-        const parsed = JSON.parse(data) as PeerDataEvent<any>;
-        const handler = this.peerDataEventHandlers[parsed.event];
-        handler?.(parsed.data);
-      } catch (error) {
-        console.error('消息处理失败', error);
-      }
-    });
-  }
-
-  // 连接事件处理
-  private setupConnectionEvents(conn: DataConnection) {
-    conn.on('open', () => {
-      this.peerStore.setId(conn.peer);
-    });
-
-    conn.on('error', (err) => {
-      console.error('连接错误：', err);
-    });
-  }
-
-  // 优化后的初始化方法
-  private initPeerListeners(peer: Peer) {
-    peer.on('connection', (conn) => {
-      this.setupConnection(conn);
-      conn.on('open', () => {
-        this.store.setGameState(GameState.PEER_CONNECTED);
-        this.peerStore.initStore(this.store.size());
-        this.sendRoomInfo();
-      });
-    });
-    peer.on('error', (err) => {
-      console.error('Peer 错误:', err);
-    });
-  }
-
-  async initPeer(): Promise<Peer> {
-    return new Promise((resolve, reject) => {
-      this.peer = new Peer();
-      this.initPeerListeners(this.peer);
-
-      this.peer.on('open', (id: string) => {
-        this.selfStore.setId(id);
-        this.selfStore.initStore(this.store.size());
-        this.store.setGameState(GameState.WAITING);
-        resolve(this.peer!);
-      });
-    });
+    return peer;
   }
 
   // 客户端连接到对方
-  async connectToPeer(peerId: string) {
+  connectToPeer(peerId: string) {
     try {
       if (!this.peer) {
-        this.peer = await this.initPeer();
+        this.peer = this.initPeer();
       }
 
       const conn = this.peer.connect(peerId);
 
-      this.setupConnection(conn);
+      this.conn = conn;
 
-      conn.on('open', () => {
-        this.store.setGameState(GameState.PEER_CONNECTED);
-        console.log(`加入房间${peerId}成功`);
-      });
+      this.connectionHandlers.handleOpen(conn);
+      this.connectionHandlers.handleData(conn);
+      this.connectionHandlers.handleError(conn);
 
     } catch (error) {
       console.error('无法连接对方:', error);
     }
   }
 
-  async send<T>(data: PeerDataEvent<T>) {
+  send<T>(data: PeerDataEvent<T>) {
     if (!this.conn) {
       console.log('连接不存在');
 
       return;
     }
-    await this.conn.send(JSON.stringify(data));
+    this.conn.send(JSON.stringify(data));
   }
 
   disconnect() {

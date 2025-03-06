@@ -96,23 +96,9 @@ export class HanoiOnlineBoardComponent implements OnInit {
     });
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
 
-    // 初始化peer客户端
-    this.loading = true;
-    await this.peerService.initPeer();
-    this.loading = false;
 
-    // 从state中获取action
-    const action = history.state.action;
-    if (action == 'join') {
-      this.loading = true;
-      const peerId = this.peerStore.id();
-      if (peerId) {
-        await this.peerService.connectToPeer(peerId);
-        this.loading = false;
-      }
-    }
   }
 
   drop(event: CdkDragDrop<number[]>) {

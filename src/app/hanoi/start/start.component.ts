@@ -15,8 +15,6 @@ import { AlertService } from '../../share/alert/alert.service';
 })
 export class HanoiStartComponent {
   private alert = inject(AlertService);
-  private selfStore = inject(SelfStore);
-  private peerStore = inject(PeerStore);
   private store = inject(Store);
   private peerService = inject(PeerService);
   private router = inject(Router);
@@ -28,19 +26,23 @@ export class HanoiStartComponent {
   showCreate = false;
   size = 3;
 
-  async joinRoom() {
+  joinRoom() {
     if (!this.peerId) {
-      console.log('请输入对方的房间ID');
+      this.alert.error('请输入房间ID!');
       return;
     }
 
-    this.peerStore.setId(this.peerId);
+    this.store.setIsHost(false);
     this.showJoin = false;
+
+    this.peerService.connectToPeer(this.peerId);
+
     this.router.navigate(['/', 'hanoi', 'online'], { state: { action: 'join' } });
   }
 
-  async createRoom() {
+  createRoom() {
     this.store.setSize(this.size);
+    this.store.setIsHost(true);
 
     this.showCreate = false;
     this.router.navigate(['/', 'hanoi', 'online'], { state: { action: 'create' } });
