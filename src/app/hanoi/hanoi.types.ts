@@ -4,13 +4,15 @@ export interface StackList {
   stack3: number[];
 }
 
-export interface RoomInfo {
+// 连接后同步状态
+export interface SyncState {
   size: number;
+  stacks: StackList;
 }
 
 
 export enum PeerEventType {
-  ROOM_INFO = 'room-info',
+  SYNC_STATE = 'sync-state',
   READY = 'ready',
   MOVE = 'move',
 }

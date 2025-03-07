@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';  // 引入 PeerJS
-import { GameState, MoveEventData, MoveOperation, PeerDataEvent, PeerEventType, PlayerState, RoomInfo } from '../hanoi.types';
+import { GameState, MoveEventData, MoveOperation, PeerDataEvent, PeerEventType, PlayerState, SyncState } from '../hanoi.types';
 import { Store } from '../store/store';
 import { SelfStore } from '../store/self.store';
 import { PeerStore } from '../store/peer.store';
@@ -21,7 +21,7 @@ export class PeerService {
 
   constructor() {
     this.initPeer();
-   }
+  }
 
   private connectionHandlers = {
     handleOpen: (conn: DataConnection) => {
@@ -33,7 +33,7 @@ export class PeerService {
         this.store.setGameState(GameState.PEER_CONNECTED);
         if (this.store.isHost()) {
           console.log(`对方[${peerId}]已加入`);
-          this.sendRoomInfo();
+          this.sendSyncState();
         } else {
           console.log(`已加入房间[${peerId}]`);
         }
@@ -80,7 +80,7 @@ export class PeerService {
   };
 
   private peerDataEventHandlers = {
-    [PeerEventType.ROOM_INFO]: (data: RoomInfo) => this.handleRoomInfo(data),
+    [PeerEventType.SYNC_STATE]: (data: SyncState) => this.handleSyncState(data),
     [PeerEventType.MOVE]: (data: MoveEventData) => this.handleMoveEvent(data),
     [PeerEventType.READY]: () => this.handleReady(),
   };
@@ -92,12 +92,13 @@ export class PeerService {
     }
     this.send(event);
   }
-  sendRoomInfo() {
+  sendSyncState() {
     // 发送房间信息
-    const roomInfo: PeerDataEvent<RoomInfo> = {
-      event: PeerEventType.ROOM_INFO,
+    const roomInfo: PeerDataEvent<SyncState> = {
+      event: PeerEventType.SYNC_STATE,
       data: {
         size: this.store.size(),
+        stacks: this.selfStore.stacks(),
       }
     }
     this.send(roomInfo);
@@ -127,10 +128,13 @@ export class PeerService {
     this.peerStore.setStacks(stacks);
     this.peerStore.addSteps();
   }
-  private handleRoomInfo(data: RoomInfo) {
+  private handleSyncState(data: SyncState) {
+    const { size, stacks } = data;
     this.store.setSize(data.size);
-    this.peerStore.initStore(this.store.size());
-    this.selfStore.initStore(this.store.size());
+    if (!this.store.isHost()) {
+      this.selfStore.setStacks(stacks);
+      this.peerStore.setStacks(stacks);
+    }
   }
 
   initPeer() {
