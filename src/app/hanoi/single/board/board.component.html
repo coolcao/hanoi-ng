@@ -1,19 +1,26 @@
+<!-- 修改顶部容器 -->
 <div
-  class="container flex min-h-screen min-w-screen flex-col items-center justify-center bg-gray-300 dark:bg-gray-600">
-  <div
-    class="my-10 flex items-center justify-center text-3xl font-bold text-gray-800 dark:text-gray-200">
-    单人练习模式
+  class="flex min-h-screen min-w-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 dark:from-gray-700 dark:to-gray-900">
+  <!-- 修改标题 -->
+  <div class="my-10">
+    <h1
+      class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-5xl font-bold text-transparent dark:from-blue-400 dark:to-purple-400">
+      单人练习模式
+    </h1>
   </div>
+
+  <!-- 修改主内容区域 -->
   <div
-    class="flex h-2/3 min-h-[600px] w-2/3 min-w-[800px] flex-col items-center justify-center rounded-2xl bg-gray-200 shadow-2xl dark:bg-gray-800 dark:shadow-gray-500">
-    <div class="my-10 flex w-full items-center justify-around">
-      <div
-        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200">
-        碟片数量：
+    class="flex h-2/3 min-h-[600px] w-2/3 min-w-[800px] flex-col items-center justify-center rounded-3xl bg-white/70 shadow-2xl backdrop-blur-lg dark:bg-gray-800/80">
+    <!-- 修改控制区域 -->
+    <div
+      class="my-10 flex w-full flex-col items-center justify-around gap-4 px-10 lg:flex-row">
+      <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200">
+        <span>碟片数量：</span>
         <select
           [ngModel]="size()"
           (ngModelChange)="changeSize($event)"
-          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+          class="rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
           <option [ngValue]="3">3片</option>
           <option [ngValue]="4">4片</option>
           <option [ngValue]="5">5片</option>
@@ -23,25 +30,28 @@
           <option [ngValue]="9">9片</option>
         </select>
       </div>
-      <div
-        class="flex items-center justify-center text-base text-gray-600 dark:text-gray-200">
-        是否显示碟片标识：
+
+      <div class="flex items-center gap-2 text-gray-700 dark:text-gray-200">
+        <span>是否显示碟片标识：</span>
         <select
           [ngModel]="showValue"
           (ngModelChange)="showValue = $event"
-          class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+          class="rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
           <option [ngValue]="true">显示</option>
           <option [ngValue]="false">不显示</option>
         </select>
       </div>
+
       <button
-        class="mr-2 cursor-pointer rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none lg:px-5 lg:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        (click)="restart()">
+        (click)="restart()"
+        class="cursor-pointer rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:from-blue-600 hover:to-purple-600">
         重新开始
       </button>
     </div>
 
-    <div class="flex w-full">
+    <!-- 修改汉诺塔区域 -->
+    <div class="flex w-full px-10">
+      <!-- 修改柱子样式 -->
       <div
         id="stack1"
         class="stack relative flex h-[400px] w-1/3 flex-col items-center justify-center border-b-2 border-gray-400"
@@ -51,33 +61,25 @@
         [cdkDropListConnectedTo]="[stack3List, stack2List]"
         (cdkDropListDropped)="drop($event)">
         <div
-          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gray-600 dark:bg-gray-400"></div>
+          class="absolute bottom-0 flex h-[400px] w-[10px] flex-col justify-end rounded-t-xl bg-gradient-to-b from-gray-600 to-gray-500 dark:from-gray-400 dark:to-gray-300"></div>
         <div
           class="absolute bottom-0 flex h-[400px] w-full flex-col items-center justify-end">
           @for (disk of stack1(); track $index; let idx = $index) {
-            @if (idx == 0 && !isCompleted()) {
-              <div
-                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                class="disk"
-                cdkDrag
-                [cdkDragData]="disk">
-                <span
-                  *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center hover:cursor-grab">
+            <div
+              [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
+              class="disk"
+              [ngClass]="{
+                'cursor-grab': idx == 0 && !isCompleted(),
+                'select-none': idx != 0 || isCompleted(),
+              }"
+              cdkDrag
+              [cdkDragData]="disk">
+              @if (showValue) {
+                <span class="flex h-full w-full items-center justify-center">
                   {{ disk }}
                 </span>
-              </div>
-            } @else {
-              <div
-                [ngStyle]="{ width: 100 + disk * 20 + 'px' }"
-                class="disk select-none">
-                <span
-                  *ngIf="showValue"
-                  class="flex h-full w-full items-center justify-center">
-                  {{ disk }}
-                </span>
-              </div>
-            }
+              }
+            </div>
           }
         </div>
       </div>
@@ -160,13 +162,16 @@
         </div>
       </div>
     </div>
-    <div
-      class="my-5 flex w-full items-center justify-center text-xl text-gray-500 dark:text-gray-400">
-      @if (isCompleted()) {
-        🎉恭喜🎉，经过 {{ steps() }}步的努力，完成游戏！
-      } @else {
-        步数：{{ steps() }}
-      }
+
+    <!-- 修改步数显示区域 -->
+    <div class="my-5 flex w-full items-center justify-center px-10">
+      <div class="text-xl text-gray-700 dark:text-gray-200">
+        @if (isCompleted()) {
+          🎉恭喜🎉，经过 {{ steps() }}步的努力，完成游戏！
+        } @else {
+          步数：{{ steps() }}
+        }
+      </div>
     </div>
   </div>
 </div>
